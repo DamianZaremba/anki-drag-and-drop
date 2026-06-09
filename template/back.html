@@ -1,0 +1,102 @@
+<div id="drag-and-drop">
+  <h3 id="drag-and-drop-title">{{Title}}</h3>
+  <div id="drag-and-drop-question">{{Question}}</div>
+  <div id="drag-and-drop-summary"></div>
+  <div id="drag-and-drop-results"></div>
+  <div id="drag-and-drop-note">{{Sources}}</div>
+</div>
+
+<script>
+(function () {
+  const pairs = [
+    {{#Q_1}}{question: `{{Q_1}}`, answer: `{{A_1}}`},{{/Q_1}}{{^Q_1}}{{#A_1}}{question: null, answer: `{{A_1}}`},{{/A_1}}{{/Q_1}}
+    {{#Q_2}}{question: `{{Q_2}}`, answer: `{{A_2}}`},{{/Q_2}}{{^Q_2}}{{#A_2}}{question: null, answer: `{{A_2}}`},{{/A_2}}{{/Q_2}}
+    {{#Q_3}}{question: `{{Q_3}}`, answer: `{{A_3}}`},{{/Q_3}}{{^Q_3}}{{#A_3}}{question: null, answer: `{{A_3}}`},{{/A_3}}{{/Q_3}}
+    {{#Q_4}}{question: `{{Q_4}}`, answer: `{{A_4}}`},{{/Q_4}}{{^Q_4}}{{#A_4}}{question: null, answer: `{{A_4}}`},{{/A_4}}{{/Q_4}}
+    {{#Q_5}}{question: `{{Q_5}}`, answer: `{{A_5}}`},{{/Q_5}}{{^Q_5}}{{#A_5}}{question: null, answer: `{{A_5}}`},{{/A_5}}{{/Q_5}}
+    {{#Q_6}}{question: `{{Q_6}}`, answer: `{{A_6}}`},{{/Q_6}}{{^Q_6}}{{#A_6}}{question: null, answer: `{{A_6}}`},{{/A_6}}{{/Q_6}}
+    {{#Q_7}}{question: `{{Q_7}}`, answer: `{{A_7}}`},{{/Q_7}}{{^Q_7}}{{#A_7}}{question: null, answer: `{{A_7}}`},{{/A_7}}{{/Q_7}}
+    {{#Q_8}}{question: `{{Q_8}}`, answer: `{{A_8}}`},{{/Q_8}}{{^Q_8}}{{#A_8}}{question: null, answer: `{{A_8}}`},{{/A_8}}{{/Q_8}}
+    {{#Q_9}}{question: `{{Q_9}}`, answer: `{{A_9}}`},{{/Q_9}}{{^Q_9}}{{#A_9}}{question: null, answer: `{{A_9}}`},{{/A_9}}{{/Q_9}}
+    {{#Q_10}}{question: `{{Q_10}}`, answer: `{{A_10}}`},{{/Q_10}}{{^Q_10}}{{#A_10}}{question: null, answer: `{{A_10}}`},{{/A_10}}{{/Q_10}}
+  ];
+
+  function renderContent(html, textClass) {
+    var wrapper = document.createElement('div');
+    wrapper.innerHTML = html;
+    var img = wrapper.querySelector('img');
+    if (img) {
+      img.removeAttribute('width');
+      img.removeAttribute('height');
+      return img;
+    }
+    var text = wrapper.textContent.trim();
+    if (text) {
+      var div = document.createElement('div');
+      div.className = textClass || 'drag-and-drop-result-card-text';
+      div.textContent = text;
+      return div;
+    }
+    return null;
+  }
+
+  function setup() {
+    if (!pairs.length) return;
+
+    var stored = sessionStorage.getItem('drag-and-drop-state');
+    var assignments = stored ? JSON.parse(stored) : new Array(pairs.length).fill(null);
+    while (assignments.length < pairs.length) assignments.push(null);
+
+    var correct = 0, wrong = 0;
+    var resultsEl = document.getElementById('drag-and-drop-results');
+
+    pairs.forEach(function (pair, i) {
+      if (!pair.question) return;
+      var placed    = assignments[i];
+      var isCorrect = placed === i;
+
+      if (isCorrect) correct++;
+      else wrong++;
+
+      var card = document.createElement('div');
+      card.className = 'drag-and-drop-result-card ' + (isCorrect ? 'correct' : 'wrong');
+
+      var answerEl = renderContent(pair.question, 'drag-and-drop-result-card-text');
+      if (answerEl) card.appendChild(answerEl);
+
+      var divider = document.createElement('hr');
+      divider.className = 'drag-and-drop-result-divider';
+      card.appendChild(divider);
+
+      var icon = document.createElement('div');
+      icon.className = 'drag-and-drop-result-icon ' + (isCorrect ? 'correct' : 'wrong');
+      icon.textContent = isCorrect ? '✓' : '✗';
+      card.appendChild(icon);
+
+      if (placed !== null) {
+        var placedEl = renderContent(pairs[placed].answer, 'drag-and-drop-result-card-text');
+        if (placedEl) card.appendChild(placedEl);
+      }
+
+      if (!isCorrect) {
+        var label = document.createElement('div');
+        label.className = 'drag-and-drop-result-label correct';
+        label.textContent = 'should be:';
+        card.appendChild(label);
+
+        var correctEl = renderContent(pair.answer, 'drag-and-drop-result-card-text');
+        if (correctEl) card.appendChild(correctEl);
+      }
+
+      resultsEl.appendChild(card);
+    });
+
+    var summaryEl = document.getElementById('drag-and-drop-summary');
+    summaryEl.textContent =
+      correct + '\u202f/\u202f' + (correct + wrong) + ' correct' +
+      (wrong ? '\u2002\u2022\u2002' + wrong + ' wrong' : '');
+  }
+
+  setup();
+})();
+</script>

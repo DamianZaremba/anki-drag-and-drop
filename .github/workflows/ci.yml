@@ -1,0 +1,35 @@
+name: CI
+on: { pull_request: { } }
+concurrency:
+  group: ${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+jobs:
+  setup-build:
+    uses: infrabits/ci-setup-tox-env/.github/workflows/setup.yml@main
+
+  execute-lint:
+    needs: [setup-build]
+    uses: infrabits/ci-run-tox-env/.github/workflows/run.yml@main
+    with:
+      environments: ${{ needs.setup-build.outputs.lint }}
+
+  create-package:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
+
+      - uses: infrabits/ci-setup-python@main
+        with:
+          install_dependencies: true
+          install_test_dependencies: false
+          install_tox: false
+
+      - run: poetry run ./scripts/create-package.py
+
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: release-artifacts
+          retention-days: 7
+          path: drag-and-drop.apkg
