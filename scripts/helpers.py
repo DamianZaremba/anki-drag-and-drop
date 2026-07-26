@@ -3,10 +3,11 @@ from pathlib import PosixPath
 from anki.collection import Collection
 from anki.models import NotetypeDict
 
+TEMPLATE_DIR = PosixPath(__file__).parent.parent / "anki_drag_and_drop" / "template"
+
 
 def _load_file(file_name: str) -> str:
-    path = PosixPath(__name__).parent.parent / "template" / file_name
-    return path.read_text()
+    return (TEMPLATE_DIR / file_name).read_text()
 
 
 def get_or_create_model(collection: Collection, model_name: str) -> tuple[NotetypeDict, bool]:
@@ -29,7 +30,7 @@ def sync_model_templates(model: NotetypeDict) -> NotetypeDict:
 
 def sync_model_fields(collection: Collection, model: NotetypeDict) -> NotetypeDict:
     """Update a model with our expected fields."""
-    expected_fields = ["Title", "Question", "Sources"] + [f for n in range(1, 11) for f in (f"Q_{n}", f"A_{n}")]
+    expected_fields = ["Title", "Question", "Explanation"] + [f for n in range(1, 11) for f in (f"Q_{n}", f"A_{n}")]
     existing_fields = {f["name"] for f in model["flds"]}
 
     for field_name in expected_fields:

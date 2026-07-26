@@ -1,5 +1,6 @@
 [project]
 name = "anki-drag-and-drop"
+version = "0.1.0"
 requires-python = ">=3.13"
 dependencies = [
     "click",
@@ -7,7 +8,7 @@ dependencies = [
 ]
 
 [tool.poetry]
-package-mode = false
+include = ["anki_drag_and_drop/template/*"]
 
 [tool.poetry.group.test.dependencies]
 tox = "*"
