@@ -5,11 +5,11 @@ concurrency:
   cancel-in-progress: true
 jobs:
   setup-build:
-    uses: infrabits/ci-setup-tox-env/.github/workflows/setup.yml@main
+    uses: infrabits/ci-setup-tox-env/.github/workflows/setup.yml@b2d4f67c809423d364e800630fa6919868e903f5 # v1.8.0
 
   execute-lint:
     needs: [setup-build]
-    uses: infrabits/ci-run-tox-env/.github/workflows/run.yml@main
+    uses: infrabits/ci-run-tox-env/.github/workflows/run.yml@37fc7f6fd3377207ade86db0056d1a826f61e278 # v1.4.0
     with:
       environments: ${{ needs.setup-build.outputs.lint }}
 
@@ -20,7 +20,7 @@ jobs:
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
 
-      - uses: infrabits/ci-setup-python@main
+      - uses: infrabits/ci-setup-python@0a2dd968401b001362997490a977f0177a600232 # v1.6.0
         with:
           install_dependencies: true
           install_test_dependencies: false
