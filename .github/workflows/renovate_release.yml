@@ -6,7 +6,7 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: infrabits/ci-create-renovate-release@40a8503e8bab9c4c89f04af896ef8ddbcc7294cc # v1.5.0
+      - uses: infrabits/ci-create-renovate-release@272b5bb5362a4bfc382e2eb9467b9733df321cf7 # v1.9.0
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           create-release: false
@@ -19,7 +19,7 @@ jobs:
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10
 
-      - uses: infrabits/ci-setup-python@0a2dd968401b001362997490a977f0177a600232 # v1.6.0
+      - uses: infrabits/ci-setup-python@e2b1af9cbd4f0cf31736b5ae234471b61aa41220 # v1.8.0
         with:
           install_dependencies: true
           install_test_dependencies: false
